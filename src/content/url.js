@@ -1,2 +1,2 @@
-export let SERVER_URL = "http://localhost:3000"
-export let SERVER_URL_USER = "http://localhost:3000/users"
+export let SERVER_URL = "https://serverxcidic.herokuapp.com"
+export let SERVER_URL_USER = "https://serverxcidic.herokuapp.com/users"

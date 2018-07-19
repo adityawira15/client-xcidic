@@ -20,6 +20,7 @@ export default class Signin extends Component {
         this.handleEmail = this.handleEmail.bind(this)
         this.handlePassword = this.handlePassword.bind(this)
         this.login = this.login.bind(this)
+        this.handleStateRedirect = this.handleStateRedirect.bind(this)
     }
 
     handleEmail(e) {
@@ -85,9 +86,13 @@ export default class Signin extends Component {
         }
     }
 
+    handleStateRedirect(){
+        this.setState({ redirect: false })
+    }
+
     render() {
         if (this.state.redirect === true) {
-            this.setState({ redirect: false })
+            this.handleStateRedirect()
             if (this.state.type === 'Doctor') {
                 return (
                     <Redirect to="/home" />

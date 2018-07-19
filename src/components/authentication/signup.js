@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import request from 'superagent'
 import * as server from '../../content/url'
 import { Redirect } from 'react-router-dom'
+import jwt from 'jsonwebtoken'
 
 export default class Signup extends Component {
     constructor(props) {
@@ -15,7 +16,9 @@ export default class Signup extends Component {
             type: 'Doctor',
             error: '',
             status: false,
-            redirect: false
+            redirect: false,
+            userid: 0,
+            usertype: ''
         }
 
         this.firstname = this.firstname.bind(this)
@@ -25,6 +28,7 @@ export default class Signup extends Component {
         this.rePassword = this.rePassword.bind(this)
         this.type = this.type.bind(this)
         this.handleSignup = this.handleSignup.bind(this)
+        this.handleStateRedirect = this.handleStateRedirect.bind(this)
     }
 
     firstname(e) {
@@ -67,15 +71,19 @@ export default class Signup extends Component {
                     if (err) throw err
                     var data = JSON.parse(response.text)
                     if (data.token !== null && data.token && data.token !== undefined) {
-                        this.setState({
-                            firstname: '',
-                            lastname: '',
-                            email: '',
-                            password: '',
-                            repassword: '',
-                            type: 'Doctor',
-                            error: data.message,
-                            status: true
+                        jwt.verify(data.token, 'testxcidic', (err, decoded) => {
+                            this.setState({
+                                firstname: '',
+                                lastname: '',
+                                email: '',
+                                password: '',
+                                repassword: '',
+                                type: 'Doctor',
+                                error: data.message,
+                                status: true,
+                                userid: decoded.id,
+                                usertype: decoded.type
+                            })
                         })
                         localStorage.setItem('token', data.token)
                     } else {
@@ -120,13 +128,22 @@ export default class Signup extends Component {
         }
     }
 
+    handleStateRedirect(){
+        this.setState({ redirect: false })
+    }
+
     render() {
-        if(this.state.redirect){
-            
-            this.setState({redirect: false})
-            return(
-                <Redirect to="/home" />
-            )
+        if (this.state.redirect === true) {
+            this.handleStateRedirect()
+            if (this.state.usertype === 'Doctor') {
+                return (
+                    <Redirect to="/home" />
+                )
+            } else {
+                return (
+                    <Redirect to={"/datapatient/" + this.state.userid} />
+                )
+            }
         }
         return (
             <div className="container">
