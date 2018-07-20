@@ -108,7 +108,6 @@ export default class Home extends Component {
                     </div>
                     {this.alerts()}
                     <Add handleDisplay={this.handleDisplay} handleMessage={this.handleMessage} display={this.state.display} />
-                    {/* <Detail /> */}
                     {this.state.data.map((val, index) => {
                         return(
                             <ListPatient key={index} id={val.id} name={val.fullname} email={val.email} />

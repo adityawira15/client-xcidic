@@ -162,9 +162,9 @@ export default class Add extends Component {
                             </div>
                             <div className="form-group">
                                 <ul>
-                                    {this.state.arrotherdisease.map((val) => {
+                                    {this.state.arrotherdisease.map((val, index) => {
                                         return (
-                                            <li>{val}</li>
+                                            <li key={index}>{val}</li>
                                         )
                                     })}
                                 </ul>
@@ -178,9 +178,9 @@ export default class Add extends Component {
                             </div>
                             <div className="form-group">
                                 <ul>
-                                    {this.state.arrtesttool.map((val) => {
+                                    {this.state.arrtesttool.map((val, index) => {
                                         return (
-                                            <li>{val}</li>
+                                            <li key={index}>{val}</li>
                                         )
                                     })}
                                 </ul>
@@ -194,9 +194,9 @@ export default class Add extends Component {
                             </div>
                             <div className="form-group">
                                 <ul>
-                                    {this.state.arrpresentation.map((val) => {
+                                    {this.state.arrpresentation.map((val, index) => {
                                         return (
-                                            <li>{val}</li>
+                                            <li key={index}>{val}</li>
                                         )
                                     })}
                                 </ul>

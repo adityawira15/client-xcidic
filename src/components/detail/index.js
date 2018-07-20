@@ -87,18 +87,18 @@ export default class Detail extends Component {
                     <p>{this.state.disease}</p>
                     <h3> <b> kemungkinan penyakit lainnya</b> </h3>
                     <ul>
-                        {this.state.diseases.map((val) => {
+                        {this.state.diseases.map((val, index) => {
                             return(
-                                <li>{val}</li>
+                                <li key={index}>{val}</li>
                             )
                         })}
                     </ul>
                     <p><b>Tests: </b>{this.state.tools.join(', ')}</p>
                     <h2> presentasi </h2>
                     <ul>
-                        {this.state.presentations.map((val) => {
+                        {this.state.presentations.map((val, index) => {
                             return(
-                                <li>{val}</li>
+                                <li key={index}>{val}</li>
                             )
                         })}
                     </ul>

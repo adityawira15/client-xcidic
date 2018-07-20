@@ -32,9 +32,13 @@ export default class DataPatient extends Component {
                     button: 'btn-danger'
                 }
             ],
-            data: []
+            data: [],
+            message: '',
+            display: 'none'
         }
         this.handleSignout = this.handleSignout.bind(this)
+        this.deleteDiagnosis = this.deleteDiagnosis.bind(this)
+        this.setMessage = this.setMessage.bind(this)
     }
 
     componentWillMount() {
@@ -60,32 +64,91 @@ export default class DataPatient extends Component {
             })
     }
 
+    deleteDiagnosis(id) {
+        request
+            .delete(server.SERVER_URL + '/deletedata/' + id)
+            .set('Accept', 'application/json')
+            .end((err, response) => {
+                let data = JSON.parse(response.text)
+                if (err) throw err
+                let index = this.state.data.findIndex(o => o.id === id)
+                let array = this.state.data
+                if (index >= 0) {
+                    delete array[index]
+                    this.setState({
+                        message: data.message,
+                        data: array,
+                        display: 'block'
+                    })
+                }
+            })
+    }
+
     handleList() {
+        let token = localStorage.getItem('token')
+        let data = jwt.verify(token, 'testxcidic')
         if (this.state.data.length === 0) {
             return (
                 <div className="container" style={{ textAlign: 'center', padding: "100px 0" }}>
-                    <h1 style={{opacity: 0.5}}>Not Found!</h1>
+                    <h1 style={{ opacity: 0.5 }}>Not Found!</h1>
                 </div>
             )
         } else {
             return (
-                <div className="container">
-                    {this.state.data.map((val) => {
+                <div>
+                    {this.state.data.map((val, index) => {
                         let random = Math.floor(Math.random() * 4)
-                        return (
-                            <div className={"alert " + this.state.alertcolor[random].background} style={{ textAlign: "left", marginLeft: 0, color: this.state.alertcolor[random].color }}>
-                                <Link to={"/detail/" + val.id} className={"btn btn-xs pull-right " + this.state.alertcolor[random].button}>Learn More</Link>
-                                <strong>Diagnostic: </strong>{moment(val.date).format('DD MMMM YYYY')}
-                        </div>
+                        if (data.type === 'Doctor') {
+                            return (
+                                <li key={index} style={{
+                                    listStyleType: "none",
+                                    paddingLeft: 0,
+                                    marginLeft: 0
+                                }}>
+                                    <div className={"alert " + this.state.alertcolor[random].background} id="alerthtml" style={{ textAlign: "left", marginLeft: 0, color: this.state.alertcolor[random].color, marginRight: 30 + '%' }}>
+                                        <label htmlFor="alerthtml" >
+                                            <button type="button" title="Delete Diagnosis!" className={"btn " + this.state.alertcolor[random].button} onClick={() => this.deleteDiagnosis(val.id)} style={{ padding: "0 7px", borderRadius: 100 + '%', marginRight: "2em" }}>-</button>
+                                        </label>
+                                        <Link to={"/detail/" + val.id} className={"btn btn-xs pull-right " + this.state.alertcolor[random].button}>Learn More</Link>
+                                        <strong>Diagnostic: </strong>{moment(val.date).format('DD MMMM YYYY')}
+                                    </div>
+                                </li>
+                            )
+                        } else {
+                            return (
+                                <li key={index} style={{
+                                    listStyleType: "none",
+                                    paddingLeft: 0,
+                                    marginLeft: 0
+                                }}>
+                                    <div className={"alert " + this.state.alertcolor[random].background} id="alerthtml" style={{ textAlign: "left", marginLeft: 0, color: this.state.alertcolor[random].color, marginRight: 30 + '%' }}>
+                                        <Link to={"/detail/" + val.id} className={"btn btn-xs pull-right " + this.state.alertcolor[random].button}>Learn More</Link>
+                                        <strong>Diagnostic: </strong>{moment(val.date).format('DD MMMM YYYY')}
+                                    </div>
+                                </li>
+                            )
+                        }
 
-                        )
                     })}
                 </div>
             )
         }
     }
 
+    setMessage() {
+        setTimeout(() => {
+            this.setState({
+                message: '',
+                display: 'none'
+            })
+
+        }, 5000)
+    }
+
     render() {
+        if (this.state.message !== '') {
+            this.setMessage()
+        }
         return (
             <div className="container">
                 <div className="row hidden-xs topper">
@@ -119,7 +182,12 @@ export default class DataPatient extends Component {
                         </div>
                     </nav>
                 </div>
-                {this.handleList()}
+                <p className="alert alert-danger" style={{ display: this.state.display, color: this.state.alertcolor[3].color }}>{this.state.message}</p>
+                <div className="container">
+                    <ul stye={{ listStyleType: "none" }}>
+                        {this.handleList()}
+                    </ul>
+                </div>
             </div>
         )
     }
